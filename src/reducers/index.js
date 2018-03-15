@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux';
-import repoReducer from './repoReducer';
+import reposReducer from './reposReducer';
+import profileReducer from './profileReducer';
 
 export default combineReducers({
-    repos: repoReducer
+    repos: reposReducer,
+    profileInfo: profileReducer
 });

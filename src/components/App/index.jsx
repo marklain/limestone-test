@@ -1,19 +1,45 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchReposByTheStars } from '../../fetch';
+import { fetchTopReposByLanguage } from '../../fetch';
 import ReposList from '../ReposList';
+import AppBar from '../AppBar';
 
-const App = ({ onAddTopRepos }) => (
-            <div>
-                <button onClick={onAddTopRepos}>Get Top Repositories by the Stars</button>
-                <ReposList />
+const App = ({ onAddTopRepos }) => {
+    let selectRef = null;
+
+    const onSubmitForm = (evt) => {
+        evt.preventDefault();
+        onAddTopRepos(selectRef.value);
+    }
+
+    return (
+            <div className="wrapper">
+                <div className="main">
+                    <form className="search-repos" onSubmit={onSubmitForm}>
+                        <select className="search-repos__language" ref={node => selectRef = node}>
+                            <option value="JavaScript">JavaScript</option>
+                            <option value="PHP">PHP</option>
+                            <option value="Java">Java</option>
+                            <option value="Python">Python</option>
+                            <option value="Ruby">Ruby</option>
+                        </select>
+                        <button className="search-repos__btn" type="submit">Get Top Repositories By The Stars</button>
+                    </form>
+                    <ReposList />
+                </div>
+                <AppBar />
             </div>
-        );
+        )};
+
+App.propTypes = {
+    onAddTopRepos: PropTypes.func.isRequired
+}
 
 const mapDispatchToProps = dispatch => ({
-    onAddTopRepos() {
+    onAddTopRepos(lang) {
         let repos = null;
-        fetchReposByTheStars().then(data => repos = data);
+        fetchTopReposByLanguage(lang).then(data => repos = data);
         setTimeout(() => {
             dispatch({
                 type: 'TOP_REPOS_ADD',
@@ -25,5 +51,3 @@ const mapDispatchToProps = dispatch => ({
 })
 
 export default connect(null, mapDispatchToProps)(App);
-
-// https://api.github.com/search/repositories?q=language:javascript&stars:top
